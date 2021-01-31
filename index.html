@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pin Generator</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="pin-generator half-width">
+                    <input id="inputValue" class="form-control" type="text" disabled>
+                    <button id="generateBtn" class="generate-btn">Generate Pin</button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="input-section half-width">
+                    <input id="inputValueCalc" class="form-control" type="text" disabled>
+                    <div class="numbers">
+                        <div id="calcBody" class="calc-body">
+                            <div class="calc-button-row">
+                                <div class="button">7</div>
+                                <div class="button">8</div>
+                                <div class="button">9</div>
+                            </div>
+                            <div class="calc-button-row">
+                                <div class="button">4</div>
+                                <div class="button">5</div>
+                                <div class="button">6</div>
+                            </div>
+                            <div class="calc-button-row">
+                                <div class="button">1</div>
+                                <div class="button">2</div>
+                                <div class="button">3</div>
+                            </div>
+                            <div class="calc-button-row">
+                                <div class="button">
+                                    < </div> <div class="button">0
+                                </div>
+                                <div class="button Clear">C</div>
+                            </div>
+                            <div>
+                                <button id="submitBtn" onclick="verifyPin()" type="submit" class="submit-btn"
+                                    value="submit">Submit</button>
+                                    <p id="disableMsg" class="disableMsg">Your button has been disabled</p>
+                                <p class="action-left" id="leftHide"><span id="leftValue">3</span> try left</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="notify-section">
+                <p id="incorrectPin" class="notify">❌ Pin Didn't Match, Please try again</p>
+                <p id="correctPin" class="notify">✅ Pin Matched... Secret door is opening for you</p>
+            </div>
+        </div>
+        <script>
+            document.getElementById('generateBtn').addEventListener('click', function () {
+                let pinNumber = getRandomArbitrary(1000, 10000);
+                // alert(pinNumber);
+                const inputValue = document.getElementById('inputValue');
+                inputValue.value = pinNumber;
+            })
+
+
+            const calcBody = document.getElementById('calcBody');
+            calcBody.addEventListener('click', function (event) {
+                const digit = event.target.innerText;
+                if (isNaN(digit)) {
+                    //handle backspace
+                    //handle clear
+                    const typedInput = document.getElementById('inputValueCalc');
+                    typedInput.value = '';
+                } else {
+                    const typedInput = document.getElementById('inputValueCalc');
+                    typedInput.value = typedInput.value + digit;
+                }
+
+            })
+            //verifyPin
+            function verifyPin() {
+                const generatePin = document.getElementById('inputValue').value;
+                const typedPin = document.getElementById('inputValueCalc').value;
+                if (generatePin === typedPin) {
+                    //not error correctPin
+                    correctIncorrect('block', 'none');
+                } else {
+                    correctIncorrect('none', 'block');
+                }
+
+            }
+
+            //leftValue
+            document.getElementById('submitBtn').addEventListener('click', function () {
+                click();
+            })
+            let clicks = 0;
+
+            function click() {
+                if (clicks < 3) {
+                    console.log(clicks);
+                    clicks += 1;
+                    leftValue();
+                } else if (clicks <= 3) {
+                    console.log('disable State')
+                    document.getElementById("submitBtn").disabled = true;
+                    document.getElementById('disableMsg').style.display = "block";
+                    document.getElementById('leftHide').style.display = "none";
+                }
+            };
+
+            function leftValue() {
+                const leftValue = document.getElementById('leftValue').innerText;
+                const leftValueParse = parseInt(leftValue);
+                const newLeftValue = leftValueParse - 1;
+                document.getElementById('leftValue').innerText = newLeftValue;
+            }
+
+
+            //correct incorrect Pin handler
+            function correctIncorrect(correctPinStyle, incorrectPinStyle) {
+                const correctPin = document.getElementById('correctPin');
+                correctPin.style.display = correctPinStyle;
+                const inCorrectPin = document.getElementById('incorrectPin');
+                inCorrectPin.style.display = incorrectPinStyle;
+            }
+
+            //Generate Number Showing from this Function
+            function getRandomArbitrary(min, max) {
+                let randomNumber = Math.random() * (max - min) + min;
+                let randomNumberParse = parseInt(randomNumber);
+                return randomNumberParse;
+            }
+        </script>
+</body>
+
+</html>
